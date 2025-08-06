@@ -11,12 +11,14 @@ const   http        = require('http'),
         dayjs       = require('dayjs'),
         utc         = require('dayjs/plugin/utc'),
         duration    = require('dayjs/plugin/duration'),
+        relativeTime = require('dayjs/plugin/relativeTime'),
         DatabaseTester = require('./lib/database-tester'),
         port        = process.env.PORT || 3000;
 
 // Configure dayjs plugins
 dayjs.extend(utc);
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
         
 
 class HelloWorldServer {
