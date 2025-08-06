@@ -15,6 +15,7 @@ COPY package.json package.json
 RUN npm install --production
 
 COPY files files/
+COPY lib lib/
 COPY app.js app.js
 
 CMD ["node", "app.js"]

@@ -142,6 +142,10 @@
 <strong>LOCAL TIME:</strong> {{localTime}}
 <strong>UTC:</strong> {{utcTime}}
 <strong>UPTIME:</strong> {{uptime}}</pre>
+    {{#if databases}}
+    <h3>Database Connections.</h3>
+    <pre>{{{databases}}}</pre>
+    {{/if}}
     <h3>Environment.</h3>
     <pre>{{{env}}}</pre>
     <div id="controls">

@@ -9,6 +9,7 @@ const   http        = require('http'),
         colour      = require('randomcolor'),
         Handlebars  = require('handlebars'),
         moment      = require('moment'),
+        DatabaseTester = require('./lib/database-tester'),
         port        = process.env.PORT || 3000;
         
 
@@ -18,7 +19,7 @@ class HelloWorldServer {
 
       let previousMTime = new Date(0);
       
-      this.index = path.resolve('/application/files/index.htm');
+      this.index = path.resolve(__dirname, 'files/index.htm');
 
       fs.watch(this.index, async (event, filename) => {
         if (filename) {
@@ -35,6 +36,7 @@ class HelloWorldServer {
       this.startTime  = new Date().getTime(); 
       this.instance   = uuid.v4();
       this.colour     = colour();
+      this.dbTester   = new DatabaseTester();
       this.server     = this.startServer();
       
       //
@@ -84,6 +86,7 @@ class HelloWorldServer {
                 instance,
                 colour:     this.colour,
                 env:        this.getEnvironment(),
+                databases:  this.dbTester.getFormattedStatus(),
                 localTime:  moment().format(),
                 utcTime:    moment.utc().format(),
                 uptime:     this.getUptime()
@@ -117,8 +120,13 @@ class HelloWorldServer {
 }
 
 // handle SIGINT properly
-process.on('SIGINT', function() {
+process.on('SIGINT', async function() {
+  console.log('Shutting down gracefully...');
+  const server = global.helloWorldServer;
+  if (server && server.dbTester) {
+    await server.dbTester.cleanup();
+  }
   process.exit();
 });
 
-new HelloWorldServer();
+global.helloWorldServer = new HelloWorldServer();
