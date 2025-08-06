@@ -26,31 +26,44 @@ This container provides a stable HTTP service that displays system information a
 The container automatically detects and tests database connections based on environment variables:
 
 ### MySQL
+
 Set these environment variables to enable MySQL connectivity testing:
+
 - `MYSQL_HOST` (required)
 - `MYSQL_PORT` (default: 3306)
 - `MYSQL_USER` (default: root)
 - `MYSQL_PASSWORD` (default: empty)
 - `MYSQL_DATABASE` (optional)
+- `MYSQL_SSL` (set to 'true' to enable SSL/TLS connections)
+- `MYSQL_SSL_REJECT_UNAUTHORIZED` (default: true, set to 'false' to allow self-signed certificates)
 
 ### MongoDB
+
 Set these environment variables to enable MongoDB connectivity testing:
+
 - `MONGO_HOST` (required)
 - `MONGO_PORT` (default: 27017)
 - `MONGO_USER` (optional)
 - `MONGO_PASSWORD` (optional)
 - `MONGO_DATABASE` (default: test)
+- `MONGO_SSL` (set to 'true' to enable SSL/TLS connections)
+- `MONGO_SSL_VALIDATE` (default: true, set to 'false' to disable certificate validation)
 
 ### Redis
+
 Set these environment variables to enable Redis connectivity testing:
+
 - `REDIS_HOST` (required)
 - `REDIS_PORT` (default: 6379)
 - `REDIS_PASSWORD` (optional)
+- `REDIS_SSL` (set to 'true' to enable SSL/TLS connections)
+- `REDIS_SSL_REJECT_UNAUTHORIZED` (default: true, set to 'false' to allow self-signed certificates)
 
 ### Connection Status Indicators
-- ✅ **Connected**: Successful connection with response time
-- ❌ **Failed**: Connection failed with error details
-- ⏳ **Connecting**: Connection attempt in progress
+
+- **Connected**: Successful connection with response time
+- **Failed**: Connection failed with error details
+- **Connecting**: Connection attempt in progress
 - Database section is hidden when no databases are configured
 
 ## Usage
@@ -78,6 +91,16 @@ docker run -p 3000:3000 \
   -e MYSQL_HOST=mysql-server \
   -e MONGO_HOST=mongo-server \
   -e REDIS_HOST=redis-server \
+  hello-world
+
+# Run with SSL/TLS enabled databases
+docker run -p 3000:3000 \
+  -e MYSQL_HOST=mysql-server \
+  -e MYSQL_SSL=true \
+  -e MONGO_HOST=mongo-server \
+  -e MONGO_SSL=true \
+  -e REDIS_HOST=redis-server \
+  -e REDIS_SSL=true \
   hello-world
 ```
 
@@ -115,6 +138,7 @@ spec:
 ## Endpoints
 
 - **GET /**: Main page displaying system information and environment variables
+- **GET /api**: JSON API endpoint returning all system information for monitoring
 - **GET /state/kill**: Triggers graceful shutdown (sends SIGINT to process)
 
 ## Environment Variables
@@ -145,6 +169,51 @@ This helps validate:
 - Connection timeouts are set to 5 seconds for quick failure detection
 - All connection attempts include response time measurements
 - Failed connections display specific error messages for troubleshooting
+
+### API Monitoring
+
+The `/api` endpoint returns JSON data perfect for monitoring and automation:
+
+```bash
+# Check instance status
+curl http://localhost:3000/api | jq .
+
+# Monitor database connections
+curl http://localhost:3000/api | jq '.databases'
+
+# Get environment variables
+curl http://localhost:3000/api | jq '.environment'
+
+# Check uptime
+curl http://localhost:3000/api | jq '.uptime'
+```
+
+Example JSON response:
+
+```json
+{
+  "platform": "linux",
+  "hostname": "hello-world-pod-abc123",
+  "instance": "550e8400-e29b-41d4-a716-446655440000",
+  "colour": "#FF5733",
+  "environment": {
+    "MYSQL_HOST": "mysql-server",
+    "MYSQL_PASSWORD": "AVNS**************r2",
+    "NODE_ENV": "production"
+  },
+  "databases": {
+    "mysql": {
+      "status": "connected",
+      "error": null,
+      "lastCheck": "2024-01-15T10:30:45Z",
+      "responseTime": 45
+    }
+  },
+  "localTime": "2024-01-15T10:30:45-08:00",
+  "utcTime": "2024-01-15T18:30:45Z",
+  "uptime": "2 hours"
+}
+```
 
 ## Dependencies
 

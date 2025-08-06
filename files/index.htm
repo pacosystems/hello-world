@@ -85,6 +85,18 @@
     body.killed h1 {
         text-decoration: line-through;
     }
+    .status-connected {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .status-error {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .status-connecting {
+        color: #ffc107;
+        font-weight: bold;
+    }
     </style>
     <script>
         // sends a signal to the backend to make the container unstable. this will cause the container to crash but 
@@ -103,7 +115,7 @@
                 const counter = document.getElementById('unstable-counter');
                 // time left is the difference between now and now + killInterval
                 const timeLeft = Math.floor((killTime - Date.now()) / 1000);
-                counter.innerText = `Unstable mode 🥴 (${timeLeft}s)`;
+                counter.innerText = `Unstable mode (${timeLeft}s)`;
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                 }
@@ -152,8 +164,8 @@
         <h3>Controls.</h3>
         <p>These controls will put the container into an <em>Unstable</em> mode (can crash unpredictably) or <em>Kill</em> mode (terminates the container). These modes can be used to test your Kubernetes cluster's ability to restore services.</p>
         <ul>
-            <li><a class="btn" href="" onclick="return unstable();" id="unstable-counter">Unstable mode 🥴</a></li>
-            <li><a class="btn" href="" onclick="return kill();">Kill instance ☠️</a></li>
+            <li><a class="btn" href="" onclick="return unstable();" id="unstable-counter">Unstable mode</a></li>
+            <li><a class="btn" href="" onclick="return kill();">Kill instance</a></li>
         </ul>
     </div>
 </div>

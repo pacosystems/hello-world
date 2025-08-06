@@ -78,6 +78,24 @@ class HelloWorldServer {
             // send a SIGINT to the process
             process.kill(process.pid, 'SIGINT');
 
+        } else if (pathname === '/api') {
+            // Handle /api route - return JSON status
+            const apiData = {
+                platform: os.platform(),
+                hostname,
+                instance,
+                colour: this.colour,
+                environment: this.getEnvironmentObject(),
+                databases: this.dbTester.getConnectionStatus(),
+                localTime: moment().format(),
+                utcTime: moment.utc().format(),
+                uptime: this.getUptime(),
+                startTime: this.startTime
+            };
+            
+            response.writeHead(200, {'Content-Type': 'application/json'});
+            response.end(JSON.stringify(apiData, null, 2));
+
         } else {
             // Default route
             let data = {
@@ -114,8 +132,39 @@ class HelloWorldServer {
       return keys.sort((a, b)=>{
           return a.localeCompare(b);
         }).map((e)=>{
-          return `<strong>${e}</strong>: ${process.env[e]}`;
+          let value = process.env[e];
+          // Mask password fields - keep first 4 and last 2 chars, star out the middle
+          if (e.includes('_PASSWORD')) {
+            if (value && value.length > 6) {
+              const first4 = value.substring(0, 4);
+              const last2 = value.substring(value.length - 2);
+              const starCount = value.length - 6;
+              value = first4 + '*'.repeat(starCount) + last2;
+            }
+          }
+          return `<strong>${e}</strong>: ${value}`;
         }).join('\n');
+    }
+
+    getEnvironmentObject () {
+      let keys = Object.keys(process.env);
+      let env = {};
+      keys.sort((a, b)=>{
+          return a.localeCompare(b);
+        }).forEach((e)=>{
+          let value = process.env[e];
+          // Mask password fields - keep first 4 and last 2 chars, star out the middle
+          if (e.includes('_PASSWORD')) {
+            if (value && value.length > 6) {
+              const first4 = value.substring(0, 4);
+              const last2 = value.substring(value.length - 2);
+              const starCount = value.length - 6;
+              value = first4 + '*'.repeat(starCount) + last2;
+            }
+          }
+          env[e] = value;
+        });
+      return env;
     }
 }
 

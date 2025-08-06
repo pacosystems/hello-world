@@ -1,8 +1,10 @@
-version: '3.7'
+version: "3.7"
 services:
   hello-world:
     container_name: com.pacosystems.helloworld
     image: pacosystems/hello-world:latest
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     environment:
@@ -13,5 +15,4 @@ services:
     volumes:
       - ./files:/application/files
     build:
-      context:
-        ./
+      context: ./
