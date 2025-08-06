@@ -4,8 +4,8 @@ FROM node:20.11.1-alpine3.19
 # maintainer
 LABEL maintainer Dave Bullough <hello@pacosystems.com>
 
-# install bash for convenience
-RUN apk --no-cache add bash
+# install bash, jq, and curl for convenience and debugging
+RUN apk --no-cache add bash jq curl
 
 RUN mkdir -p /application
 
