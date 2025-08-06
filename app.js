@@ -8,9 +8,15 @@ const   http        = require('http'),
         uuid        = require('uuid'),
         colour      = require('randomcolor'),
         Handlebars  = require('handlebars'),
-        moment      = require('moment'),
+        dayjs       = require('dayjs'),
+        utc         = require('dayjs/plugin/utc'),
+        duration    = require('dayjs/plugin/duration'),
         DatabaseTester = require('./lib/database-tester'),
         port        = process.env.PORT || 3000;
+
+// Configure dayjs plugins
+dayjs.extend(utc);
+dayjs.extend(duration);
         
 
 class HelloWorldServer {
@@ -87,8 +93,8 @@ class HelloWorldServer {
                 colour: this.colour,
                 environment: this.getEnvironmentObject(),
                 databases: this.dbTester.getConnectionStatus(),
-                localTime: moment().format(),
-                utcTime: moment.utc().format(),
+                localTime: dayjs().format(),
+                utcTime: dayjs.utc().format(),
                 uptime: this.getUptime(),
                 startTime: this.startTime
             };
@@ -105,8 +111,8 @@ class HelloWorldServer {
                 colour:     this.colour,
                 env:        this.getEnvironment(),
                 databases:  this.dbTester.getFormattedStatus(),
-                localTime:  moment().format(),
-                utcTime:    moment.utc().format(),
+                localTime:  dayjs().format(),
+                utcTime:    dayjs.utc().format(),
                 uptime:     this.getUptime()
             };
             let html = this.template(data);
@@ -123,7 +129,7 @@ class HelloWorldServer {
     getUptime () {
         
       let now  = new Date().getTime();
-      return moment.duration(now - this.startTime).humanize();
+      return dayjs.duration(now - this.startTime).humanize();
     }
     
     getEnvironment () {

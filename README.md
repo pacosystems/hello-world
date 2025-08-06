@@ -216,17 +216,6 @@ Example JSON response:
 }
 ```
 
-## Dependencies
-
-- Node.js 20.11.1 (Alpine Linux)
-- Handlebars for templating
-- Moment.js for time formatting
-- UUID for unique instance identification
-- randomcolor for visual differentiation
-- mysql2 for MySQL connectivity testing
-- mongodb for MongoDB connectivity testing
-- redis for Redis connectivity testing
-
 ## License
 
 ISC
