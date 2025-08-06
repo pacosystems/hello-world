@@ -34,6 +34,7 @@ Set these environment variables to enable MySQL connectivity testing:
 - `MYSQL_USER` (default: root)
 - `MYSQL_PASSWORD` (default: empty)
 - `MYSQL_DATABASE` (optional)
+- `MYSQL_AUTH_PLUGIN` (default: mysql_native_password, for compatibility with older MySQL 5.x instances. Set to 'caching_sha2_password' for newer MySQL 8.x+ servers)
 - `MYSQL_SSL` (set to 'true' to enable SSL/TLS connections)
 - `MYSQL_SSL_REJECT_UNAUTHORIZED` (default: true, set to 'false' to allow self-signed certificates)
 
