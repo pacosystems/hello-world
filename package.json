@@ -9,7 +9,7 @@
   "author": "Dave Bullough <hello@pacosystems.com>",
   "license": "ISC",
   "dependencies": {
-    "handlebars": "^4.7.8",
+    "handlebars": "^4.7.9",
     "dayjs": "^1.11.13",
     "mysql2": "^3.14.3",
     "mongodb": "^6.14.2",
